@@ -3,11 +3,10 @@ defmodule ExKuna do
   Documentation for KunaEx.
   """
 
-
   @host "https://kuna.io/api/v2"
   @kuna "https://kuna.io"
-  @public_key "dfsdkfksdjflkjsdflkdsjflkjd"
-  @secret_key "sdflkjdflkjsdlfkjldskjflkdsjf"
+  @public_key "public_keypublic_keypublic_key"
+  @secret_key "secret_keysecret_keysecret_key"
   @headers %{"Content-Type" => "application/json", "charset" => "utf-8"}
 
   def timestamp, do: get_request("#{@host}/timestamp")
@@ -44,7 +43,7 @@ defmodule ExKuna do
   # volume in btc
   def order_create(side, volume, price, market \\ "btcuah") do
     uri = "/api/v2/orders"
-    params="access_key=#{@public_key}&market=#{market}&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
+    params = "access_key=#{@public_key}&market=#{market}&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
     post_request(url)
 
@@ -76,7 +75,7 @@ defmodule ExKuna do
 
   def sign(uri, params, method \\ "GET") do
     string = "#{method}|#{uri}|#{params}"
-    :crypto.hmac(:sha256, @secret_key, string) |> Base.encode16 |> String.downcase
+    :sha256 |> :crypto.hmac( @secret_key, string) |> Base.encode16 |> String.downcase
   end
 
 end
