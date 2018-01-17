@@ -3,10 +3,11 @@ defmodule ExKuna do
   Documentation for KunaEx.
   """
 
+  @public_key Application.get_env(:ex_kuna, :public_key)
+  @secret_key Application.get_env(:ex_kuna, :secret_key)
+
   @host "https://kuna.io/api/v2"
   @kuna "https://kuna.io"
-  @public_key "public_keypublic_keypublic_key"
-  @secret_key "secret_keysecret_keysecret_key"
   @headers %{"Content-Type" => "application/json", "charset" => "utf-8"}
 
   def timestamp, do: get_request("#{@host}/timestamp")
