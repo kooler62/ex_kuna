@@ -14,13 +14,15 @@ defmodule ExKuna do
 
   def tickers(market \\ "btcuah"), do: get_request("#{@host}/tickers/#{market}")
 
-  def order_book(market \\ "btcuah"), do: get_request("#{@host}/order_book?market=#{market}")
+  def order_book(market \\ "btcuah"),
+    do: get_request("#{@host}/order_book?market=#{market}")
 
-  def history(market \\ "btcuah"), do: get_request("#{@host}/trades?market=#{market}")
+  def history(market \\ "btcuah"),
+    do: get_request("#{@host}/trades?market=#{market}")
 
   # --- USER METHODS ---
 
-  def user_info() do
+  def user_info do
     uri = "/api/v2/members/me"
     params = "access_key=#{@public_key}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params)}"
@@ -44,7 +46,8 @@ defmodule ExKuna do
   # volume in btc
   def order_create(side, volume, price, market \\ "btcuah") do
     uri = "/api/v2/orders"
-    params = "access_key=#{@public_key}&market=#{market}&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
+    params = "access_key=#{@public_key}&market=#{market}" <>
+      "&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
     post_request(url)
 
@@ -72,11 +75,12 @@ defmodule ExKuna do
     HTTPoison.post(url, [], @headers)
   end
 
-  def tonce(), do: "#{System.system_time(:second)}000"
+  def tonce, do: "#{System.system_time(:second)}000"
 
   def sign(uri, params, method \\ "GET") do
     string = "#{method}|#{uri}|#{params}"
-    :sha256 |> :crypto.hmac( @secret_key, string) |> Base.encode16 |> String.downcase
+    :sha256 |> :crypto.hmac( @secret_key, string)
+    |> Base.encode16 |> String.downcase
   end
 
 end
