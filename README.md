@@ -10,7 +10,11 @@ by adding `kuna_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:kuna_ex, "~> 0.1.0"}
+    {
+      :ex_kuna,
+      git: "https://github.com/bytewitchcraft/ex_kuna.git",
+      branch: "master"
+    }
   ]
 end
 ```
