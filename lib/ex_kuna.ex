@@ -3,8 +3,12 @@ defmodule ExKuna do
   Documentation for KunaEx.
   """
 
-  @public_key Application.get_env(:ex_kuna, :public_key)
-  @secret_key Application.get_env(:ex_kuna, :secret_key)
+  def public_key do
+    Application.get_env(:ex_kuna, :public_key)
+  end
+  def secret_key do
+    Application.get_env(:ex_kuna, :secret_key)
+  end
 
   @host "https://kuna.io/api/v2"
   @kuna "https://kuna.io"
@@ -24,21 +28,21 @@ defmodule ExKuna do
 
   def user_info do
     uri = "/api/v2/members/me"
-    params = "access_key=#{@public_key}&tonce=#{tonce()}"
+    params = "access_key=#{public_key()}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params)}"
     get_request(url)
   end
 
   def orders(market \\ "btcuah") do
     uri = "/api/v2/orders"
-    params = "access_key=#{@public_key}&market=#{market}&tonce=#{tonce()}"
+    params = "access_key=#{public_key()}&market=#{market}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params)}"
     get_request(url)
   end
 
   def orders_history(market \\ "btcuah") do
     uri = "/api/v2/trades/my"
-    params = "access_key=#{@public_key}&market=#{market}&tonce=#{tonce()}"
+    params = "access_key=#{public_key()}&market=#{market}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params)}"
     get_request(url)
   end
@@ -46,7 +50,7 @@ defmodule ExKuna do
   # volume in btc
   def order_create(side, volume, price, market \\ "btcuah") do
     uri = "/api/v2/orders"
-    params = "access_key=#{@public_key}&market=#{market}" <>
+    params = "access_key=#{public_key()}&market=#{market}" <>
       "&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
     post_request(url)
@@ -55,7 +59,7 @@ defmodule ExKuna do
 
   def order_delete(id) do
     uri = "/api/v2/order/delete"
-    params = "access_key=#{@public_key}&id=#{id}&tonce=#{tonce()}"
+    params = "access_key=#{public_key()}&id=#{id}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
     post_request(url)
   end
@@ -79,7 +83,7 @@ defmodule ExKuna do
 
   def sign(uri, params, method \\ "GET") do
     string = "#{method}|#{uri}|#{params}"
-    :sha256 |> :crypto.hmac( @secret_key, string)
+    :sha256 |> :crypto.hmac( secret_key(), string)
     |> Base.encode16 |> String.downcase
   end
 
