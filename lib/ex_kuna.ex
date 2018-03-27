@@ -53,15 +53,18 @@ defmodule ExKuna do
     params = "access_key=#{public_key()}&market=#{market}" <>
       "&price=#{price}&side=#{side}&tonce=#{tonce()}&volume=#{volume}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
-    post_request(url)
-
+    {:ok, %HTTPoison.Response{body: body, status_code: status_code}} = post_request(url)
+    responce = Poison.decode!(body, as: %{}) |> Map.put(:status_code, status_code)
+    {:ok, responce}
   end
 
   def order_delete(id) do
     uri = "/api/v2/order/delete"
     params = "access_key=#{public_key()}&id=#{id}&tonce=#{tonce()}"
     url = "#{@kuna}#{uri}?#{params}&signature=#{sign(uri, params, "POST")}"
-    post_request(url)
+    {:ok, %HTTPoison.Response{body: body, status_code: status_code}} = post_request(url)
+    responce = Poison.decode!(body, as: %{}) |> Map.put(:status_code, status_code)
+    {:ok, responce}
   end
 
   # --- HELPER METHODS ---
